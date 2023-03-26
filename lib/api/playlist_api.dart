@@ -19,8 +19,16 @@ class GetInfo {
         jsonDecode(response.body)["tracks"]["items"][0]["data"]["name"];
     String albumPhoto = jsonDecode(response.body)["tracks"]["items"][0]["data"]
         ["albumOfTrack"]["coverArt"]["sources"][0]["url"];
+
+    String artistName = jsonDecode(response.body)["tracks"]["items"][0]["data"]
+        ["artists"]["items"][0]["profile"]["name"];
+
+    print(artistName);
     context.read<PlayLists>().addPlayList(
-        value: PlayList(songName: songName, albumPhoto: albumPhoto));
+        value: PlayList(
+            songName: songName,
+            albumPhoto: albumPhoto,
+            artistName: artistName));
   }
 }
 

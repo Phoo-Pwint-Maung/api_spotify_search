@@ -23,7 +23,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: const AddPage(title: "Search Song and Image"),
-        routes: {"/minus_page": (context) => const MinusPage(title: "Minus")},
+        routes: {
+          "/minus_page": (context) => const MinusPage(title: "Spotify Search")
+        },
       ),
     );
   }

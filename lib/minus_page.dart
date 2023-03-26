@@ -23,120 +23,140 @@ class _HomeScreenState extends State<MinusPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        backgroundColor: Colors.black,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 30,
-          vertical: 30,
-        ),
-        child: SingleChildScrollView(
-          controller: ScrollController(),
-          child: Column(
-            children: [
-              // Minus Function Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Consumer<CountModel>(builder: (context, countModel, child) {
-                    return Text(
-                      "${countModel.x}",
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+      body: SingleChildScrollView(
+        controller: ScrollController(),
+        child: Column(
+          children: [
+            // Search Artist
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 20,
+                    horizontal: 20,
+                  ),
+                  child: Consumer<PlayLists>(builder: (context, playlist, _) {
+                    return Column(
+                      children: [
+                        TextFormField(
+                          controller: search,
+                          style: const TextStyle(
+                            color: Colors.green,
+                            letterSpacing: 0.3,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          cursorColor: Colors.green,
+                          decoration: const InputDecoration(
+                            filled: true,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 5),
+                            fillColor: Colors.black,
+                            border: InputBorder.none,
+                          ),
+                        ),
+                        OutlinedButton(
+                          onPressed: () {
+                            Provider.of<TextSearch>(context, listen: false)
+                                .textList
+                                .clear();
+                            Provider.of<TextSearch>(context, listen: false)
+                                .addText(search: search.text);
+
+                            playlist.playList.clear();
+                            GetInfo().getInfo(context: context);
+                          },
+                          child: const Text("Click"),
+                        ),
+                        Consumer<TextSearch>(builder: (context, textsearch, _) {
+                          if (textsearch.textList.isEmpty) {
+                            return const Text("search something ");
+                          }
+                          return Text(textsearch.textList.first);
+                        }),
+                        ListView(
+                          shrinkWrap: true,
+                          children: [
+                            if (playlist.playList.isNotEmpty)
+                              ...playlist.playList.map(
+                                (e) => ListView(
+                                  shrinkWrap: true,
+                                  children: [
+                                    Image.network(e.albumPhoto),
+                                    Text(e.songName),
+                                    if (playlist.playList.isEmpty)
+                                      const Text("no data found")
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ...playlist.playList.map((e) => Container(
+                              width: 400,
+                              height: 70,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 5,
+                                horizontal: 10,
+                              ),
+                              color: Colors.black,
+                              child: Row(
+                                children: [
+                                  Image.network(
+                                    e.albumPhoto,
+                                    width: 100,
+                                    height: 100,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            e.songName,
+                                            style: const TextStyle(
+                                              color: Colors.green,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            e.artistName,
+                                            style: const TextStyle(
+                                              color: Colors.green,
+                                              fontSize: 15,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 40,
+                                    child: Icon(
+                                      Icons.arrow_forward,
+                                      color: Colors.green,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )),
+                      ],
                     );
                   }),
-                  const Text(
-                    "Total",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      // context.read<CountModel>().decrement(); အတူတူပဲ
-                      if (Provider.of<CountModel>(context, listen: false).x >
-                          0) {
-                        Provider.of<CountModel>(context, listen: false)
-                            .decrement();
-                      }
-                    },
-                    child: const Icon(Icons.remove),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text("next Page"),
-                  )
-                ],
-              ),
-              //  Minus Function Row
-
-              // Search Artist
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 20,
-                      horizontal: 20,
-                    ),
-                    child: Consumer<PlayLists>(builder: (context, playlist, _) {
-                      return Column(
-                        children: [
-                          TextFormField(
-                            controller: search,
-                          ),
-                          OutlinedButton(
-                            onPressed: () {
-                              Provider.of<TextSearch>(context, listen: false)
-                                  .textList
-                                  .clear();
-                              Provider.of<TextSearch>(context, listen: false)
-                                  .addText(search: search.text);
-
-                              playlist.playList.clear();
-                              GetInfo().getInfo(context: context);
-                            },
-                            child: const Text("Click"),
-                          ),
-                          Consumer<TextSearch>(
-                              builder: (context, textsearch, _) {
-                            if (textsearch.textList.isEmpty) {
-                              return const Text("search something ");
-                            }
-                            return Text(textsearch.textList.first);
-                          }),
-                          ListView(
-                            shrinkWrap: true,
-                            children: [
-                              if (playlist.playList.isNotEmpty)
-                                ...playlist.playList.map(
-                                  (e) => ListView(
-                                    shrinkWrap: true,
-                                    children: [
-                                      Image.network(e.albumPhoto),
-                                      Text(e.songName),
-                                      if (playlist.playList.isEmpty)
-                                        const Text("no data found")
-                                    ],
-                                  ),
-                                ),
-                            ],
-                          )
-                        ],
-                      );
-                    }),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
